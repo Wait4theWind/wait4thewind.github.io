@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>CF279B - Books 题解 - Wait4theWind</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Wait4theWind"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Wait4theWind"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="题目简介Valera 有 $t$ 分钟的空闲时间，从图书馆借了 $n$ 本书，读完第 $i$ 本需要 $a_i$ 分钟。他会任选一本编号 $i$ 的书，然后从这本开始一本接一本地读下去（$i, i+1, i+2, \dots$），直到空闲时间用完或读完了第 $n$ 本为止；每本书都必须完整读完（剩余时间不够就不会开始读）。求他最多能读多少本书。 数据范围：$1 \le n \le 10^5$，$1"><meta property="og:type" content="blog"><meta property="og:title" content="CF279B - Books 题解"><meta property="og:url" content="http://wait4thewind.github.io/2026/09/17/cf279b/"><meta property="og:site_name" content="Wait4theWind"><meta property="og:description" content="题目简介Valera 有 $t$ 分钟的空闲时间，从图书馆借了 $n$ 本书，读完第 $i$ 本需要 $a_i$ 分钟。他会任选一本编号 $i$ 的书，然后从这本开始一本接一本地读下去（$i, i+1, i+2, \dots$），直到空闲时间用完或读完了第 $n$ 本为止；每本书都必须完整读完（剩余时间不够就不会开始读）。求他最多能读多少本书。 数据范围：$1 \le n \le 10^5$，$1"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://wait4thewind.github.io/img/og_image.png"><meta property="article:published_time" content="2026-09-17T13:48:16.661Z"><meta property="article:modified_time" content="2026-09-17T13:48:16.661Z"><meta property="article:author" content="Begemot"><meta property="article:tag" content="Codeforces"><meta property="article:tag" content="题解"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://wait4thewind.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://wait4thewind.github.io/2026/09/17/cf279b/"},"headline":"CF279B - Books 题解","image":["http://wait4thewind.github.io/img/og_image.png"],"datePublished":"2026-09-17T13:48:16.661Z","dateModified":"2026-09-17T13:48:16.661Z","author":{"@type":"Person","name":"Begemot"},"publisher":{"@type":"Organization","name":"Wait4theWind","logo":{"@type":"ImageObject"}},"description":"题目简介Valera 有 $t$ 分钟的空闲时间，从图书馆借了 $n$ 本书，读完第 $i$ 本需要 $a_i$ 分钟。他会任选一本编号 $i$ 的书，然后从这本开始一本接一本地读下去（$i, i+1, i+2, \\dots$），直到空闲时间用完或读完了第 $n$ 本为止；每本书都必须完整读完（剩余时间不够就不会开始读）。求他最多能读多少本书。 数据范围：$1 \\le n \\le 10^5$，$1"}</script><link rel="canonical" href="http://wait4thewind.github.io/2026/09/17/cf279b/"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.2"></head><body class="is-1-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Wait4theWind</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-12"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2026-09-17T13:48:16.661Z" title="2026/9/17 21:48:16">2026-09-17</time></span><span class="level-item">Updated&nbsp;<time dateTime="2026-09-17T13:48:16.661Z" title="2026/9/17 21:48:16">2026-09-17</time></span><span class="level-item"><a class="link-muted" href="/categories/XCPC/">XCPC</a></span><span class="level-item">6 minutes read (About 974 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">CF279B - Books 题解</h1><div class="content"><h2 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h2><p>Valera 有 $t$ 分钟的空闲时间，从图书馆借了 $n$ 本书，读完第 $i$ 本需要 $a_i$ 分钟。他会任选一本编号 $i$ 的书，然后从这本开始一本接一本地读下去（$i, i+1, i+2, \dots$），直到<strong>空闲时间用完</strong>或<strong>读完了第 $n$ 本</strong>为止；每本书都必须完整读完（剩余时间不够就不会开始读）。求他最多能读多少本书。</p>
+<p>数据范围：$1 \le n \le 10^5$，$1 \le t \le 10^9$，$1 \le a_i \le 10^4$。</p>
+<span id="more"></span>
+
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>Valera 从某本书 $i$ 开始一本接一本地读，因此他读的书一定是<strong>一段连续区间</strong> $[i, r]$。又因为每本书的时间 $a_i \ge 1$，区间越长总时间越大——所以固定起点 $i$ 时，能读的书数就是「以 $i$ 为左端点、区间和不超过 $t$ 的最长区间长度」。</p>
+<p>于是问题转化为：<strong>求最长的连续子数组，使其元素和 $\le t$</strong>。</p>
+<p>由于所有 $a_i &gt; 0$，区间和随右端点单调递增，可以用<strong>滑动窗口（双指针）</strong>：</p>
+<ol>
+<li>维护窗口 $[l, r]$ 与窗口内的剩余可用时间；</li>
+<li>对每个左端点 $l$，尽量把 $r$ 向右扩展，直到再加一本就超时；</li>
+<li>记录当前窗口长度并取最大值；</li>
+<li>左端点右移一格，把 $a_l$ 移出窗口（归还时间），继续。</li>
+</ol>
+<h2 id="关键观察"><a href="#关键观察" class="headerlink" title="关键观察"></a>关键观察</h2><ul>
+<li>读的书必须连续 $\Rightarrow$ 连续子数组问题。</li>
+<li>$a_i \ge 1$（严格为正）$\Rightarrow$ 区间和随右端点单调不减 $\Rightarrow$ 双指针可行，且两个指针各自单调右移，总移动次数 $O(n)$。</li>
+</ul>
+<h2 id="正确性说明"><a href="#正确性说明" class="headerlink" title="正确性说明"></a>正确性说明</h2><p>对每个左端点 $l$，滑动窗口得到的 $r$ 是满足 $\sum_{k&#x3D;l}^{r} a_k \le t$ 的<strong>最大</strong>右端点：一旦加入 $a_{r+1}$ 就超过 $t$，而所有 $a_i$ 为正，之后只会更大。因此以 $l$ 为起点能读的最大书数为 $r - l + 1$。对所有 $l$ 取最大值，即为所求答案。</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><ul>
+<li>时间复杂度：$O(n)$。左右指针都只单调右移，每个位置最多被访问常数次。</li>
+<li>空间复杂度：$O(n)$，用于存储数组 $a$。</li>
+</ul>
+<h2 id="C-代码"><a href="#C-代码" class="headerlink" title="C++ 代码"></a>C++ 代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">3e5</span> + <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, a[MAXN];</span><br><span class="line">ll t;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; t;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> <span class="type">cur_t</span> = t, cur_cnt = <span class="number">0</span>, ans = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> l_book, r_book = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (l_book = <span class="number">1</span>; l_book &lt;= n; ++l_book) &#123;</span><br><span class="line">        <span class="keyword">while</span> (r_book &lt; n) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="type">cur_t</span> - a[r_book + <span class="number">1</span>] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                r_book++;</span><br><span class="line">                <span class="type">cur_t</span> -= a[r_book];</span><br><span class="line">                cur_cnt++;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ans = <span class="built_in">max</span>(ans, cur_cnt);</span><br><span class="line">        cur_cnt--;</span><br><span class="line">        <span class="type">cur_t</span> += a[l_book];</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> T;</span><br><span class="line">    T = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (T--) &#123;</span><br><span class="line">        <span class="built_in">solve</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="我的错误与反思"><a href="#我的错误与反思" class="headerlink" title="我的错误与反思"></a>我的错误与反思</h2><p>训练过程中出现 1 处<strong>真实错误</strong>：内层循环死循环。</p>
+<p>最初的写法是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (r_book &lt;= n) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="type">cur_t</span> - a[r_book + <span class="number">1</span>] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        r_book++;</span><br><span class="line">        <span class="type">cur_t</span> -= a[r_book];</span><br><span class="line">        cur_cnt++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 <code>if</code> 条件不成立（下一本书放不下）时，循环体什么都不做，<code>r_book</code> 不变，而 <code>while (r_book &lt;= n)</code> 依然为真，于是<strong>空转成死循环</strong>，程序超时（<code>--dry-run</code> 直接卡死）。</p>
+<p>修正：扩展不动时跳出循环——</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (r_book &lt; n) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="type">cur_t</span> - a[r_book + <span class="number">1</span>] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        r_book++;</span><br><span class="line">        <span class="type">cur_t</span> -= a[r_book];</span><br><span class="line">        cur_cnt++;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>反思</strong>：写 <code>while + if</code> 结构时，必须保证循环每轮都朝终止方向推进。若 <code>if</code> 不成立时循环变量不改变，就会空转。以后遇到这类「扩展型」循环，应把边界条件直接写进 <code>while</code> 判断（如 <code>while (r &lt; n &amp;&amp; cur_t &gt;= a[r + 1])</code>），或确保有 <code>else break</code>。</p>
+<p>本题未记录其他明显错误。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CF279B - Books 题解</p><p><a href="http://wait4thewind.github.io/2026/09/17/cf279b/">http://wait4thewind.github.io/2026/09/17/cf279b/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Begemot</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2026-09-17</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2026-09-17</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Codeforces/">Codeforces</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%A2%98%E8%A7%A3/">题解</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/09/02/cf2256/"><span class="level-item">Codeforces Round 1116 (Div. 2) 题解</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Wait4theWind</a><p class="is-size-7"><span>&copy; 2026 Begemot</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/Wait4theWind/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'folded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
