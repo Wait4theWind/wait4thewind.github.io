@@ -30,37 +30,37 @@
       window.addEventListener('hashchange', switchTab, false);
   })();
   </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.2"></head><body class="is-1-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Wait4theWind</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-12"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2026-09-18T00:19:42.283Z" title="2026/9/18 08:19:42">2026-09-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2026-09-18T00:43:27.927Z" title="2026/9/18 08:43:27">2026-09-18</time></span><span class="level-item"><a class="link-muted" href="/categories/XCPC/">XCPC</a></span><span class="level-item">7 minutes read (About 1042 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">CF303A - Lucky Permutation Triple 题解</h1><div class="content"><h2 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h2><p>长度为 $n$ 的排列（permutation）是 $0,1,\dots,n-1$ 的一个排列。给定 $n$，要找出三个长度为 $n$ 的排列 $a,b,c$，使得对每个位置 $i$ 都满足</p>
-<p>$$(a_i + b_i) \bmod n &#x3D; c_i$$</p>
+<p>$$(a_i + b_i) \bmod n = c_i$$</p>
 <p>如果不存在则输出 <code>-1</code>；存在则输出任意一组解。</p>
 <p>数据范围：$1 \le n \le 10^5$。</p>
 <span id="more"></span>
 
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>第一步：判断有无解。</strong></p>
 <p>三个排列各自的和都是 $\frac{n(n-1)}{2}$。注意 $a_i, b_i \le n-1$，所以 $a_i + b_i \le 2n-2 &lt; 2n$，即每个位置至多”绕一圈”。设满足 $a_i + b_i \ge n$ 的位置有 $k$ 个，则</p>
-<p>$$\sum c_i &#x3D; \sum (a_i + b_i) - k \cdot n &#x3D; n(n-1) - kn$$</p>
-<p>又 $\sum c_i &#x3D; \frac{n(n-1)}{2}$，联立得 $kn &#x3D; \frac{n(n-1)}{2}$，即</p>
-<p>$$k &#x3D; \frac{n-1}{2}$$</p>
+<p>$$\sum c_i = \sum (a_i + b_i) - k \cdot n = n(n-1) - kn$$</p>
+<p>又 $\sum c_i = \frac{n(n-1)}{2}$，联立得 $kn = \frac{n(n-1)}{2}$，即</p>
+<p>$$k = \frac{n-1}{2}$$</p>
 <p>所以 $n$ 必须是<strong>奇数</strong>，否则无解，输出 <code>-1</code>。</p>
 <p><strong>第二步：构造。</strong></p>
 <p>取最朴素的方案：</p>
 <ul>
-<li>$a_i &#x3D; i$（恒等排列）；</li>
-<li>$b$ 取一个”轮转”：$b_0 &#x3D; n-1$，$b_i &#x3D; i-1\ (i \ge 1)$；</li>
-<li>令 $c_i &#x3D; (a_i + b_i) \bmod n$。</li>
+<li>$a_i = i$（恒等排列）；</li>
+<li>$b$ 取一个”轮转”：$b_0 = n-1$，$b_i = i-1\ (i \ge 1)$；</li>
+<li>令 $c_i = (a_i + b_i) \bmod n$。</li>
 </ul>
 <h2 id="关键观察"><a href="#关键观察" class="headerlink" title="关键观察"></a>关键观察</h2><ul>
-<li>用<strong>总和</strong>作为全局不变量，可以一次性确定”绕圈位置数” $k &#x3D; \frac{n-1}{2}$，从而得到存在性条件：$n$ 为奇数。</li>
-<li>构造时让 $b_i &#x3D; (i-1) \bmod n$，则 $c_i &#x3D; (i + b_i) \bmod n &#x3D; (2i-1) \bmod n$。因为 $n$ 为奇数时 $\gcd(2,n)&#x3D;1$，所以 $i \mapsto (2i-1) \bmod n$ 是一个双射，$c$ 自然也是排列。</li>
+<li>用<strong>总和</strong>作为全局不变量，可以一次性确定”绕圈位置数” $k = \frac{n-1}{2}$，从而得到存在性条件：$n$ 为奇数。</li>
+<li>构造时让 $b_i = (i-1) \bmod n$，则 $c_i = (i + b_i) \bmod n = (2i-1) \bmod n$。因为 $n$ 为奇数时 $\gcd(2,n)=1$，所以 $i \mapsto (2i-1) \bmod n$ 是一个双射，$c$ 自然也是排列。</li>
 </ul>
 <h2 id="正确性说明"><a href="#正确性说明" class="headerlink" title="正确性说明"></a>正确性说明</h2><ul>
-<li>$a_i &#x3D; i$ 显然是 $0..n-1$ 的排列。</li>
-<li>$b &#x3D; [n-1, 0, 1, \dots, n-2]$ 是 $0..n-1$ 的排列（一次循环移位）。</li>
-<li>$c_i &#x3D; (2i-1) \bmod n$：当 $n$ 为奇数时，$i \mapsto (2i-1) \bmod n$ 是双射，因此 $c$ 也是 $0..n-1$ 的排列。</li>
-<li>且每个 $i$ 都按定义满足 $(a_i + b_i) \bmod n &#x3D; c_i$。</li>
+<li>$a_i = i$ 显然是 $0..n-1$ 的排列。</li>
+<li>$b = [n-1, 0, 1, \dots, n-2]$ 是 $0..n-1$ 的排列（一次循环移位）。</li>
+<li>$c_i = (2i-1) \bmod n$：当 $n$ 为奇数时，$i \mapsto (2i-1) \bmod n$ 是双射，因此 $c$ 也是 $0..n-1$ 的排列。</li>
+<li>且每个 $i$ 都按定义满足 $(a_i + b_i) \bmod n = c_i$。</li>
 </ul>
 <p>其中「$n$ 为奇数时 $i \mapsto (2i-1) \bmod n$ 是双射」的证明（只需证单射）：</p>
-<p>假设 $2i-1 \equiv 2j-1 \pmod n$，两边加 $1$ 得 $2(i-j) \equiv 0 \pmod n$，即 $n \mid 2(i-j)$。因为 $n$ 为奇数，$\gcd(2,n)&#x3D;1$，故 $n \mid (i-j)$。而 $i,j \in [0, n-1]$，所以 $|i-j| &lt; n$，只能 $i&#x3D;j$。</p>
-<p>直观理解：减 $1$ 是模 $n$ 环上的平移（显然是双射），关键在乘 $2$；而 $2$ 可逆当且仅当 $\gcd(2,n)&#x3D;1$，即 $n$ 为奇数（此时 $2$ 的逆元是 $\frac{n+1}{2}$）。</p>
+<p>假设 $2i-1 \equiv 2j-1 \pmod n$，两边加 $1$ 得 $2(i-j) \equiv 0 \pmod n$，即 $n \mid 2(i-j)$。因为 $n$ 为奇数，$\gcd(2,n)=1$，故 $n \mid (i-j)$。而 $i,j \in [0, n-1]$，所以 $|i-j| &lt; n$，只能 $i=j$。</p>
+<p>直观理解：减 $1$ 是模 $n$ 环上的平移（显然是双射），关键在乘 $2$；而 $2$ 可逆当且仅当 $\gcd(2,n)=1$，即 $n$ 为奇数（此时 $2$ 的逆元是 $\frac{n+1}{2}$）。</p>
 <p>因此当 $n$ 为奇数时该构造合法；当 $n$ 为偶数时由总和论证可知无解。</p>
 <h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><ul>
 <li>时间复杂度：$O(n)$。</li>
@@ -84,7 +84,7 @@
 </ol>
 <p><strong>反思</strong>：构造题要<strong>逐项验证产物是否是合法对象</strong>（排列是否每个数恰好一次、输出格式是否符合要求），而不是只看”大概能跑”。这两处都属于实现细节，和之前 CF180C 的边界问题、CF279B 的死循环同类——<strong>实现细节的严谨性仍需加强</strong>。</p>
 <p>本题未记录其他明显错误。</p>
-</div><div class="article-licensing box"><div class="licensing-title"><p>CF303A - Lucky Permutation Triple 题解</p><p><a href="http://wait4thewind.github.io/2026/09/18/cf303a/">http://wait4thewind.github.io/2026/09/18/cf303a/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Begemot</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2026-09-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2026-09-18</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Codeforces/">Codeforces</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%A2%98%E8%A7%A3/">题解</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2026/09/18/back2thefuture/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">当智力不再稀缺：AI 时代的人类位置</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/09/17/cf279b/"><span class="level-item">CF279B - Books 题解</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Wait4theWind</a><p class="is-size-7"><span>&copy; 2026 Begemot</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/Wait4theWind/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+</div><div class="article-licensing box"><div class="licensing-title"><p>CF303A - Lucky Permutation Triple 题解</p><p><a href="http://wait4thewind.github.io/2026/09/18/cf303a/">http://wait4thewind.github.io/2026/09/18/cf303a/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Begemot</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2026-09-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2026-09-18</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Codeforces/">Codeforces</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%A2%98%E8%A7%A3/">题解</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2026/10/03/DeepLearning_Notes1/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">深度学习-学习笔记1</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/09/17/cf279b/"><span class="level-item">CF279B - Books 题解</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Wait4theWind</a><p class="is-size-7"><span>&copy; 2026 Begemot</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/Wait4theWind/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,
