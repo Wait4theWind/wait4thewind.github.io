@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>深度学习-学习笔记（2） - Wait4theWind</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Wait4theWind"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Wait4theWind"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="学习深度学习的第二篇笔记，主要是 Softmax 和图像分类，不管是数学理论还是工程代码感觉都比第一篇的线性回归难"><meta property="og:type" content="blog"><meta property="og:title" content="深度学习-学习笔记（2）"><meta property="og:url" content="http://wait4thewind.github.io/2026/10/03/DeepLearning_Notes2/"><meta property="og:site_name" content="Wait4theWind"><meta property="og:description" content="学习深度学习的第二篇笔记，主要是 Softmax 和图像分类，不管是数学理论还是工程代码感觉都比第一篇的线性回归难"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://wait4thewind.github.io/img/og_image.png"><meta property="article:published_time" content="2026-10-03T05:04:44.280Z"><meta property="article:modified_time" content="2026-10-03T15:20:12.168Z"><meta property="article:author" content="Begemot"><meta property="article:tag" content="深度学习"><meta property="article:tag" content="学习笔记"><meta property="article:tag" content="AI"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://wait4thewind.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://wait4thewind.github.io/2026/10/03/DeepLearning_Notes2/"},"headline":"深度学习-学习笔记（2）","image":["http://wait4thewind.github.io/img/og_image.png"],"datePublished":"2026-10-03T05:04:44.280Z","dateModified":"2026-10-03T15:20:12.168Z","author":{"@type":"Person","name":"Begemot"},"publisher":{"@type":"Organization","name":"Wait4theWind","logo":{"@type":"ImageObject"}},"description":"学习深度学习的第二篇笔记，主要是 Softmax 和图像分类，不管是数学理论还是工程代码感觉都比第一篇的线性回归难"}</script><link rel="canonical" href="http://wait4thewind.github.io/2026/10/03/DeepLearning_Notes2/"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.2"></head><body class="is-1-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Wait4theWind</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-12"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2026-10-03T05:04:44.280Z" title="2026/10/3 13:04:44">2026-10-03</time></span><span class="level-item">Updated&nbsp;<time dateTime="2026-10-03T15:20:12.168Z" title="2026/10/3 23:20:12">2026-10-03</time></span><span class="level-item"><a class="link-muted" href="/categories/AI/">AI</a></span><span class="level-item">13 minutes read (About 1884 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">深度学习-学习笔记（2）</h1><div class="content"><p>学习深度学习的第二篇笔记，主要是 Softmax 和图像分类，不管是数学理论还是工程代码感觉都比第一篇的线性回归难</p>
+<span id="more"></span>
+
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="softmax-函数"><a href="#softmax-函数" class="headerlink" title="softmax 函数"></a>softmax 函数</h3><p>对于预测结果类的问题，我们通过 $\mathbf{o} = \mathbf{W}\mathbf{x} + \mathbf{b}$ 得到不规范的预测</p>
+<p>为了将预测规范化，我们使用 softmax 函数，即：</p>
+<p>$$
+\hat{y}_j = \frac{\exp(o_j)}{\sum_k \exp(o_k)}
+$$</p>
+<p>当然，为了提高计算效率，实际计算我们是通过矢量计算，即：</p>
+<p>$$\begin{gather*}
+\mathbf{O} = \mathbf{X}\mathbf{W} + \mathbf{b} \\
+\hat{\mathbf{Y}} = \mathrm{softmax}(\mathbf{O})
+\end{gather*}$$</p>
+<h3 id="对数似然和梯度"><a href="#对数似然和梯度" class="headerlink" title="对数似然和梯度"></a>对数似然和梯度</h3><p>类似线性回归，我们同样使用 MLE 来体现预测效果：</p>
+<p>$$
+P(\mathbf{Y} \mid \mathbf{X}) = \prod_{i=1}^n P(\mathbf{y}^{(i)} \mid \mathbf{x}^{(i)}).
+$$</p>
+<p>同样的，我们取负对数：</p>
+<p>$$
+-\log P(\mathbf{Y} \mid \mathbf{X}) = \sum_{i=1}^n -\log P(\mathbf{y}^{(i)} \mid \mathbf{x}^{(i)}) = \sum_{i=1}^n l(\mathbf{y}^{(i)}, \hat{\mathbf{y}}^{(i)}),
+$$</p>
+<p>其中损失函数是：</p>
+<p>$$
+l(\mathbf{y}, \hat{\mathbf{y}}) = - \sum_{j=1}^q y_j \log \hat{y}_j
+$$</p>
+<p>因为这里的 $y_j$ 是独热向量，所以除了一个项以外的其他项都消失了</p>
+<p>把 softmax 的式子代回上式，得到：</p>
+<p>$$
+\begin{align*}
+l(\mathbf{y}, \hat{\mathbf{y}}) &amp;= - \sum_{j=1}^q y_j \log \frac{\exp(o_j)}{\sum_{k=1}^q \exp(o_k)} \\
+&amp;= \sum_{j=1}^q y_j \log \sum_{k=1}^q \exp(o_k) - \sum_{j=1}^q y_j o_j \\
+&amp;= \log \sum_{k=1}^q \exp(o_k) - \sum_{j=1}^q y_j o_j
+\end{align*}
+$$</p>
+<p>考虑对 $o_j$ 的导数，我们得到：</p>
+<p>$$
+\partial_{o_j} l(\mathbf{y}, \hat{\mathbf{y}}) = \frac{\exp(o_j)}{\sum_{k=1}^q \exp(o_k)} - y_j = \mathrm{softmax}(\mathbf{o})_j - y_j
+$$</p>
+<p>这个答案很简洁，梯度就是预测值减去真实值，和线性回归里 $\frac{\partial l}{\partial \hat{y}} = \hat{y} - y$ 一模一样</p>
+<p>这不是巧合，在指数族分布模型中，对数似然的梯度正是这么求的，方便了实践中的梯度计算</p>
+<h3 id="交叉熵——一种直觉理解"><a href="#交叉熵——一种直觉理解" class="headerlink" title="交叉熵——一种直觉理解"></a>交叉熵——一种直觉理解</h3><p>$H(P, Q)$ 表示“主观概率为 $Q$ 的观察者在看到根据概率 $P$ 生成的数据时的预期惊异”</p>
+<p>当 $P = Q$ 时，交叉熵最低，在这种情况下，从 $P$ 到 $Q$ 的交叉熵是 $H(P, P) = H(P)$</p>
+<p>简而言之，我们可以从两方面来考虑分类目标：</p>
+<ol>
+<li>最大化观测数据的似然</li>
+<li>最小化传达标签所需的惊异</li>
+</ol>
+<h2 id="图像分类模型"><a href="#图像分类模型" class="headerlink" title="图像分类模型"></a>图像分类模型</h2><h3 id="读取数据集"><a href="#读取数据集" class="headerlink" title="读取数据集"></a>读取数据集</h3><p>图像的读取没有笔记 1 中列表的读取那么简单，所以专门记一下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision</span><br><span class="line"><span class="keyword">from</span> torch.utils <span class="keyword">import</span> data</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line"><span class="comment"># 返回使用子进程的数量</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_dataloader_workers</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">load_data_fashion_mnist</span>(<span class="params">batch_size, resize=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="comment"># 把图片变成 Tensor(C, H, W) 即通道、高和宽</span></span><br><span class="line">    trans = [transforms.ToTensor()]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 判断是否要改变图片大小，如果需要，插入到 trans 列表的前面</span></span><br><span class="line">    <span class="keyword">if</span> resize:</span><br><span class="line">        trans.insert(<span class="number">0</span>, transforms.Resize(resize))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 把列表 Compose 成一个组合对象，方便传入 DataLoader 函数中</span></span><br><span class="line">    trans = transforms.Compose(trans)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 加载数据集</span></span><br><span class="line">    mnist_train = torchvision.datasets.FashionMNIST(</span><br><span class="line">        root=<span class="string">&quot;../data&quot;</span>, train=<span class="literal">True</span>, transform=trans, download=<span class="literal">True</span>)</span><br><span class="line">    mnist_test = torchvision.datasets.FashionMNIST(</span><br><span class="line">        root=<span class="string">&quot;../data&quot;</span>, train=<span class="literal">False</span>, transform=trans, download=<span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回数据</span></span><br><span class="line">    <span class="keyword">return</span> (data.DataLoader(mnist_train, batch_size, shuffle=<span class="literal">True</span>, num_workers=<span class="number">4</span>),</span><br><span class="line">            data.DataLoader(mnist_test, batch_size, shuffle=<span class="literal">False</span>, num_workers=<span class="number">4</span>))</span><br></pre></td></tr></table></figure>
+
+<p>调用数据时这样写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_iter, test_iter = load_data_fashion_mnist(<span class="number">32</span>, resize=<span class="number">64</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="手写-Softmax"><a href="#手写-Softmax" class="headerlink" title="手写 Softmax"></a>手写 Softmax</h3><h4 id="加载数据"><a href="#加载数据" class="headerlink" title="加载数据"></a>加载数据</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">256</span></span><br><span class="line">train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br></pre></td></tr></table></figure>
+
+<p>每批 256 个样本，加载数据</p>
+<h4 id="初始化参数"><a href="#初始化参数" class="headerlink" title="初始化参数"></a>初始化参数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">num_inputs = <span class="number">784</span></span><br><span class="line">num_outputs = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">W = torch.normal(<span class="number">0</span>, <span class="number">0.01</span>, size=(num_inputs, num_outputs), requires_grad=<span class="literal">True</span>)</span><br><span class="line">b = torch.zeros(num_outputs, requires_grad=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>num_inputs = 784</code>：每张图 28*28&#x3D;784 个像素，拉直成大小为 784 的向量</li>
+<li><code>num_outputs = 10</code>：10 个类别</li>
+<li><code>W</code>：权重矩阵，形状 <code>(784,10)</code>，用均值 0、标准差 0.01 的正态分布初始化，要算梯度</li>
+<li><code>b</code>：偏置，形状 <code>(10,)</code>，初始化为 0，也要算梯度</li>
+</ul>
+<h4 id="softmax-函数-1"><a href="#softmax-函数-1" class="headerlink" title="softmax 函数"></a>softmax 函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">softmax</span>(<span class="params">X</span>):</span><br><span class="line">    X_exp = torch.exp(X)</span><br><span class="line">    partition = X_exp.<span class="built_in">sum</span>(<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> X_exp / partition</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>sum(1, keepdim=True)</code>：每行求和，保留维度，形状 (batch, 1)。</p>
+</li>
+<li><p><code>X_exp / partition</code>：广播除法</p>
+</li>
+</ul>
+<h4 id="模型前向传播"><a href="#模型前向传播" class="headerlink" title="模型前向传播"></a>模型前向传播</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">net</span>(<span class="params">X</span>):</span><br><span class="line">    <span class="keyword">return</span> softmax(torch.matmul(X.reshape((-<span class="number">1</span>, W.shape[<span class="number">0</span>])), W) + b)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>X.reshape((-1, W.shape[0]))</code>：把图片拉直成 <code>(batch, 784)</code></li>
+<li><code>matmul</code>：矩阵乘法</li>
+<li><code>+ b</code>：加上偏置</li>
+<li><code>softmax()</code>：变成合法概率</li>
+</ul>
+<h4 id="交叉熵损失"><a href="#交叉熵损失" class="headerlink" title="交叉熵损失"></a>交叉熵损失</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">cross_entropy</span>(<span class="params">y_hat, y</span>):</span><br><span class="line">    <span class="keyword">return</span> -torch.log(y_hat[<span class="built_in">range</span>(<span class="built_in">len</span>(y_hat)), y])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>y_hat</code>：<code>(batch, 10)</code> 的预测概率</li>
+<li><code>y</code>：<code>(batch,)</code> 的真实标签</li>
+<li><code>y_hat[range(len(y_hat)), y]</code>：高级索引，取出每个样本真实类别的预测概率。</li>
+</ul>
+<h4 id="精度函数"><a href="#精度函数" class="headerlink" title="精度函数"></a>精度函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">accuracy</span>(<span class="params">y_hat, y</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(y_hat.shape) &gt; <span class="number">1</span> <span class="keyword">and</span> y_hat.shape[<span class="number">1</span>] &gt; <span class="number">1</span>:</span><br><span class="line">        y_hat = y_hat.argmax(axis=<span class="number">1</span>)</span><br><span class="line">    cmp = y_hat.<span class="built_in">type</span>(y.dtype) == y</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">float</span>(cmp.<span class="built_in">type</span>(y.dtype).<span class="built_in">sum</span>())</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>if 判断：如果 $\hat y$ 是多分类，那么需要 argmax</li>
+<li><code>argmax(axis=1)</code>：取每行最大概率对应的类别</li>
+<li><code>.type(y.dtype)</code>：<code>y_hat</code> 和 <code>cmp</code> 转数据类型，方便比较和计算</li>
+<li><code>.sum()</code>：统计正确数</li>
+<li><code>float(...)</code>：转成 Python 浮点数返回</li>
+</ul>
+<h4 id="评估精度"><a href="#评估精度" class="headerlink" title="评估精度"></a>评估精度</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">evaluate_accuracy</span>(<span class="params">net, data_iter</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(net, torch.nn.Module):</span><br><span class="line">        net.<span class="built_in">eval</span>()</span><br><span class="line">    metric = Accumulator(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        <span class="keyword">for</span> X, y <span class="keyword">in</span> data_iter:</span><br><span class="line">            metric.add(accuracy(net(X), y), y.numel())</span><br><span class="line">    <span class="keyword">return</span> metric[<span class="number">0</span>] / metric[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>net.eval()</code>：切换到评估模式，当然这里 net 的手写的所以没有用</li>
+<li><code>torch.no_grad()</code>：关闭梯度</li>
+<li><code>y.numel()</code> 返回张量里元素的总个数</li>
+<li>遍历所有 batch，累加，然后返回整体精度</li>
+</ul>
+<h4 id="累加器类"><a href="#累加器类" class="headerlink" title="累加器类"></a>累加器类</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Accumulator</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, n</span>):</span><br><span class="line">        <span class="variable language_">self</span>.data = [<span class="number">0.0</span>] * n</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">self, *args</span>):</span><br><span class="line">        <span class="variable language_">self</span>.data = [a + <span class="built_in">float</span>(b) <span class="keyword">for</span> a, b <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="variable language_">self</span>.data, args)]</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reset</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.data = [<span class="number">0.0</span>] * <span class="built_in">len</span>(<span class="variable language_">self</span>.data)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.data[idx]</span><br></pre></td></tr></table></figure>
+
+<h4 id="训练一个-epoch"><a href="#训练一个-epoch" class="headerlink" title="训练一个 epoch"></a>训练一个 epoch</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">train_epoch_ch3</span>(<span class="params">net, train_iter, loss, updater</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(net, torch.nn.Module):</span><br><span class="line">        net.train()</span><br><span class="line">    metric = Accumulator(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">for</span> X, y <span class="keyword">in</span> train_iter:</span><br><span class="line">        y_hat = net(X)</span><br><span class="line">        l = loss(y_hat, y)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(updater, torch.optim.Optimizer):</span><br><span class="line">            updater.zero_grad()</span><br><span class="line">            l.mean().backward()</span><br><span class="line">            updater.step()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            l.<span class="built_in">sum</span>().backward()</span><br><span class="line">            updater(X.shape[<span class="number">0</span>])</span><br><span class="line">        metric.add(<span class="built_in">float</span>(l.<span class="built_in">sum</span>()), accuracy(y_hat, y), y.numel())</span><br><span class="line">    <span class="keyword">return</span> metric[<span class="number">0</span>] / metric[<span class="number">2</span>], metric[<span class="number">1</span>] / metric[<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>net.train()</code>：切换到训练模式，当然这里 net 的手写的所以依旧没有用</li>
+<li><code>Accumulator(3)</code>：累加损失和、正确数、总数</li>
+<li>然后就是经典的遍历、前向传播、计算损失、反向转播和梯度更新</li>
+<li>if-else：兼容内置优化器和手写优化器<ul>
+<li>内置：<code>l.mean().backward()</code> + <code>updater.step()</code></li>
+<li>手写：<code>l.sum().backward()</code> + <code>updater(X.shape[0])</code></li>
+</ul>
+</li>
+<li>返回：平均训练损失、平均训练精度</li>
+</ul>
+<h4 id="训练多个-epoch"><a href="#训练多个-epoch" class="headerlink" title="训练多个 epoch"></a>训练多个 epoch</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">train_ch3</span>(<span class="params">net, train_iter, test_iter, loss, num_epochs, updater</span>):</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(num_epochs):</span><br><span class="line">        train_metrics = train_epoch_ch3(net, train_iter, loss, updater)</span><br><span class="line">        test_acc = evaluate_accuracy(net, test_iter)</span><br><span class="line">        train_loss, train_acc = train_metrics</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;epoch <span class="subst">&#123;epoch+<span class="number">1</span>&#125;</span>, train loss <span class="subst">&#123;train_loss:<span class="number">.3</span>f&#125;</span>, &#x27;</span></span><br><span class="line">              <span class="string">f&#x27;train acc <span class="subst">&#123;train_acc:<span class="number">.3</span>f&#125;</span>, test acc <span class="subst">&#123;test_acc:<span class="number">.3</span>f&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>没啥好说的，就是把前面的函数都用上并封装成一个新的函数</p>
+<h4 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lr = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">updater</span>(<span class="params">batch_size</span>):</span><br><span class="line">    <span class="keyword">return</span> d2l.sgd([W, b], lr, batch_size)</span><br><span class="line"></span><br><span class="line">num_epochs = <span class="number">10</span></span><br><span class="line">train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs, updater)</span><br></pre></td></tr></table></figure>
+
+<p>设置训练率和训练次数，写梯度更新函数，然后调用即可</p>
+<h3 id="PyTorch-工具版本"><a href="#PyTorch-工具版本" class="headerlink" title="PyTorch 工具版本"></a>PyTorch 工具版本</h3><p>调用 PyTorch 的工具可以更简单地实现代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">from</span> d2l <span class="keyword">import</span> torch <span class="keyword">as</span> d2l</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 加载数据</span></span><br><span class="line">batch_size = <span class="number">256</span></span><br><span class="line">train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 定义模型</span></span><br><span class="line">net = nn.Sequential(nn.Flatten(), nn.Linear(<span class="number">784</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init_weights</span>(<span class="params">m</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">type</span>(m) == nn.Linear:</span><br><span class="line">        nn.init.normal_(m.weight, std=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">net.apply(init_weights)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 定义损失函数</span></span><br><span class="line">loss = nn.CrossEntropyLoss(reduction=<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 定义优化器</span></span><br><span class="line">trainer = torch.optim.SGD(net.parameters(), lr=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 训练</span></span><br><span class="line">num_epochs = <span class="number">10</span></span><br><span class="line">d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)</span><br></pre></td></tr></table></figure></div><div class="article-licensing box"><div class="licensing-title"><p>深度学习-学习笔记（2）</p><p><a href="http://wait4thewind.github.io/2026/10/03/DeepLearning_Notes2/">http://wait4thewind.github.io/2026/10/03/DeepLearning_Notes2/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Begemot</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2026-10-03</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2026-10-03</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><a class="link-muted mr-2" rel="tag" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><a class="link-muted mr-2" rel="tag" href="/tags/AI/">AI</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/10/03/DeepLearning_Notes1/"><span class="level-item">深度学习-学习笔记（1）</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Wait4theWind</a><p class="is-size-7"><span>&copy; 2026 Begemot</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/Wait4theWind/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'folded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
