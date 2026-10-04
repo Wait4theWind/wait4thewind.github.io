@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>深度学习-学习笔记（3） - Wait4theWind</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Wait4theWind"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Wait4theWind"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="学习深度学习的第三篇笔记，主要是 MLP，最简单的神经网络"><meta property="og:type" content="blog"><meta property="og:title" content="深度学习-学习笔记（3）"><meta property="og:url" content="http://wait4thewind.github.io/2026/10/04/DeepLearning_Notes3/"><meta property="og:site_name" content="Wait4theWind"><meta property="og:description" content="学习深度学习的第三篇笔记，主要是 MLP，最简单的神经网络"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://wait4thewind.github.io/img/og_image.png"><meta property="article:published_time" content="2026-10-04T06:11:37.343Z"><meta property="article:modified_time" content="2026-10-04T06:51:16.968Z"><meta property="article:author" content="Begemot"><meta property="article:tag" content="深度学习"><meta property="article:tag" content="学习笔记"><meta property="article:tag" content="AI"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://wait4thewind.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://wait4thewind.github.io/2026/10/04/DeepLearning_Notes3/"},"headline":"深度学习-学习笔记（3）","image":["http://wait4thewind.github.io/img/og_image.png"],"datePublished":"2026-10-04T06:11:37.343Z","dateModified":"2026-10-04T06:51:16.968Z","author":{"@type":"Person","name":"Begemot"},"publisher":{"@type":"Organization","name":"Wait4theWind","logo":{"@type":"ImageObject"}},"description":"学习深度学习的第三篇笔记，主要是 MLP，最简单的神经网络"}</script><link rel="canonical" href="http://wait4thewind.github.io/2026/10/04/DeepLearning_Notes3/"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.2"></head><body class="is-1-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Wait4theWind</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-12"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2026-10-04T06:11:37.343Z" title="2026/10/4 14:11:37">2026-10-04</time></span><span class="level-item">Updated&nbsp;<time dateTime="2026-10-04T06:51:16.968Z" title="2026/10/4 14:51:16">2026-10-04</time></span><span class="level-item"><a class="link-muted" href="/categories/AI/">AI</a></span><span class="level-item">5 minutes read (About 677 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">深度学习-学习笔记（3）</h1><div class="content"><p>学习深度学习的第三篇笔记，主要是 MLP，最简单的神经网络</p>
+<span id="more"></span>
+
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="隐藏层"><a href="#隐藏层" class="headerlink" title="隐藏层"></a>隐藏层</h3><p>现实中的问题并不都是线性模型，所以我们引入隐藏层，把几个全连接层堆叠在一起</p>
+<p>这样的结构被称作多层感知机（MLP），我们用下面的式子表示引入隐藏层 $\mathbf{H}$ 后的网络：</p>
+<p>$$
+\begin{aligned}
+\mathbf{H} &amp;= \mathbf{X}\mathbf{W}^{(1)} + \mathbf{b}^{(1)}, \\
+\mathbf{O} &amp;= \mathbf{H}\mathbf{W}^{(2)} + \mathbf{b}^{(2)}
+\end{aligned}
+$$</p>
+<p>然而，引入隐藏层后，从数学上看却没有什么本质变化，模型退化成了普通的单层线性模型：</p>
+<p>$$
+\mathbf{O} = (\mathbf{X}\mathbf{W}^{(1)} + \mathbf{b}^{(1)})\mathbf{W}^{(2)} + \mathbf{b}^{(2)} = \mathbf{X}\mathbf{W}^{(1)}\mathbf{W}^{(2)} + \mathbf{b}^{(1)}\mathbf{W}^{(2)} + \mathbf{b}^{(2)} = \mathbf{X}\mathbf{W} + \mathbf{b}
+$$</p>
+<p>为了实现非线性变化，解决这个问题需要通过激活函数引入非线性</p>
+<h3 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h3><h4 id="ReLu-函数"><a href="#ReLu-函数" class="headerlink" title="ReLu 函数"></a>ReLu 函数</h4><p>$$
+\mathrm{ReLU}(x) = \max(x, 0)
+$$</p>
+<p>ReLu 函数只保留正值，也是最常用的激活函数</p>
+<h4 id="sigmod-函数"><a href="#sigmod-函数" class="headerlink" title="sigmod 函数"></a>sigmod 函数</h4><p>$$
+\mathrm{sigmoid}(x) = \frac{1}{1 + e^{-x}}.
+$$</p>
+<h4 id="tanh-函数"><a href="#tanh-函数" class="headerlink" title="tanh 函数"></a>tanh 函数</h4><p>$$
+\tanh(x) = \frac{1 - e^{-2x}}{1 + e^{-2x}}
+$$</p>
+<h2 id="MLP"><a href="#MLP" class="headerlink" title="MLP"></a>MLP</h2><p>使用 MLP 模型分类 softmax 中分类过的 Fashion-MNIST 图像集</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">num_inputs, num_outputs, num_hiddens = <span class="number">784</span>, <span class="number">10</span>, <span class="number">256</span></span><br><span class="line"></span><br><span class="line">W1 = nn.Parameter(torch.randn(</span><br><span class="line">    num_inputs, num_hiddens, requires_grad=<span class="literal">True</span>) * <span class="number">0.01</span>)</span><br><span class="line">b1 = nn.Parameter(torch.zeros(num_hiddens, requires_grad=<span class="literal">True</span>))</span><br><span class="line">W2 = nn.Parameter(torch.randn(</span><br><span class="line">    num_hiddens, num_outputs, requires_grad=<span class="literal">True</span>) * <span class="number">0.01</span>)</span><br><span class="line">b2 = nn.Parameter(torch.zeros(num_outputs, requires_grad=<span class="literal">True</span>))</span><br><span class="line"></span><br><span class="line">params = [W1, b1, W2, b2]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>nn.Parameter</code>：把普通张量标记为“模型需要学习的参数”</li>
+<li><code>params</code>：包装起来，方便传给优化器</li>
+</ul>
+<h3 id="激活函数-1"><a href="#激活函数-1" class="headerlink" title="激活函数"></a>激活函数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">relu</span>(<span class="params">X</span>):</span><br><span class="line">    a = torch.zeros_like(X)</span><br><span class="line">    <span class="keyword">return</span> torch.<span class="built_in">max</span>(X, a)</span><br></pre></td></tr></table></figure>
+
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">net</span>(<span class="params">X</span>):</span><br><span class="line">    X = X.reshape((-<span class="number">1</span>, num_inputs))</span><br><span class="line">    H = relu(X@W1 + b1)</span><br><span class="line">    <span class="keyword">return</span> (H@W2 + b2)</span><br></pre></td></tr></table></figure>
+
+<p><code>@</code>：一个语法糖，相当于使用 <code>matmul</code></p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loss = nn.CrossEntropyLoss(reduction=<span class="string">&#x27;none&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>和 softmax 里一样的，交叉熵损失</p>
+<h3 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">num_epochs, lr = <span class="number">10</span>, <span class="number">0.1</span></span><br><span class="line">updater = torch.optim.SGD(params, lr = lr)</span><br><span class="line">d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, updater)</span><br></pre></td></tr></table></figure>
+
+<p>因为损失函数、训练函数在 softmax 里都写过了，所以 MLP 就是在 net 里加了一个隐藏层的激活函数，还是比较简单的</p>
+<h3 id="PyTorch-简洁实现"><a href="#PyTorch-简洁实现" class="headerlink" title="PyTorch 简洁实现"></a>PyTorch 简洁实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">from</span> d2l <span class="keyword">import</span> torch <span class="keyword">as</span> d2l</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型定义</span></span><br><span class="line">net = nn.Sequential(nn.Flatten(),</span><br><span class="line">                    nn.Linear(<span class="number">784</span>, <span class="number">256</span>),</span><br><span class="line">                    nn.ReLU(),</span><br><span class="line">                    nn.Linear(<span class="number">256</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 权重初始化</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init_weights</span>(<span class="params">m</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">type</span>(m) == nn.Linear:</span><br><span class="line">        nn.init.normal_(m.weight, std=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">net.apply(init_weights)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 超参数与损失函数、优化器</span></span><br><span class="line">batch_size, lr, num_epochs = <span class="number">256</span>, <span class="number">0.1</span>, <span class="number">10</span></span><br><span class="line">loss = nn.CrossEntropyLoss(reduction=<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line">trainer = torch.optim.SGD(net.parameters(), lr=lr)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载数据</span></span><br><span class="line">train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练</span></span><br><span class="line">d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, trainer)</span><br></pre></td></tr></table></figure>
+
+<p>和 Softmax 的 PyTorch 的版本类似，只是修改了 net 的构造</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>深度学习-学习笔记（3）</p><p><a href="http://wait4thewind.github.io/2026/10/04/DeepLearning_Notes3/">http://wait4thewind.github.io/2026/10/04/DeepLearning_Notes3/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Begemot</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2026-10-04</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2026-10-04</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><a class="link-muted mr-2" rel="tag" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><a class="link-muted mr-2" rel="tag" href="/tags/AI/">AI</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/10/03/DeepLearning_Notes2/"><span class="level-item">深度学习-学习笔记（2）</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Wait4theWind</a><p class="is-size-7"><span>&copy; 2026 Begemot</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/Wait4theWind/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'folded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
